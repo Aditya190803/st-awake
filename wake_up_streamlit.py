@@ -1,4 +1,7 @@
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from streamlit_apps import STREAMLIT_APPS
 import datetime
@@ -20,8 +23,10 @@ for url in STREAMLIT_APPS:
         # Navigate to the webpage
         driver.get(url)
 
-        # Wait for the button to appear
-        wakeup_button = driver.find_element_by_css_selector("button[data-testid='wakeup-button-owner']")
+        # Find the button element by data-testid
+        wakeup_button = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "button[data-testid='wakeup-button-owner']"))
+        )
 
         # Click the button to wake up the Streamlit app
         wakeup_button.click()
@@ -31,6 +36,9 @@ for url in STREAMLIT_APPS:
     except NoSuchElementException:
         # Log button not found
         log_file.write("Button not found for app at: {}\n".format(url))
+    except Exception as e:
+        # Log any other exceptions
+        log_file.write("Error for app at {}: {}\n".format(url, str(e)))
 
 # Close the browser
 driver.quit()
