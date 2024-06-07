@@ -23,15 +23,22 @@ for url in STREAMLIT_APPS:
         # Navigate to the webpage
         driver.get(url)
 
-        # Find the button element by data-testid
-        wakeup_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.CLASS_NAME, "button_button_primary__E3Mmg")))
-
-        # Click the button to wake up the Streamlit app
-        wakeup_button.click()
+        # Check if the wake up button is already clicked
+        already_awake = "Already awake" in driver.page_source
         
-        # Log success
-        log_file.write("Successfully woke up app at: {}\n".format(url))
+        if not already_awake:
+            # Find the button element by data-testid
+            wakeup_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.CLASS_NAME, "button_button_primary__E3Mmg")))
+
+            # Click the button to wake up the Streamlit app
+            wakeup_button.click()
+
+        # Log success or already awake
+        if already_awake:
+            log_file.write("App already awake at: {}\n".format(url))
+        else:
+            log_file.write("Successfully woke up app at: {}\n".format(url))
     except NoSuchElementException:
         # Log button not found
         log_file.write("Button not found for app at: {}\n".format(url))
