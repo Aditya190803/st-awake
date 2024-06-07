@@ -24,14 +24,5 @@ jobs:
         run: |
           pip install selenium
 
-      - name: Download and set up ChromeDriver
-        run: |
-          CHROME_VERSION=$(curl -sS "https://chromedriver.storage.googleapis.com/LATEST_RELEASE")
-          CHROMEDRIVER_VERSION=$(curl -sS "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION/chromedriver_linux64.zip" | grep -oP '(\d+\.\d+\.\d+\.\d+)' | head -1)
-          curl -L -o chromedriver.zip "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
-          unzip chromedriver.zip
-          chmod +x chromedriver
-          sudo mv chromedriver /usr/local/bin/
-
       - name: Run Python script to wake up Streamlit apps
         run: python wake_up_streamlit.py
