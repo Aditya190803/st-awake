@@ -26,8 +26,8 @@ jobs:
 
       - name: Download and set up ChromeDriver
         run: |
-          CHROME_VERSION=$(google-chrome --version | cut -d' ' -f3 | cut -d'.' -f1)
-          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+          CHROME_VERSION=$(curl -sS "https://chromedriver.storage.googleapis.com/LATEST_RELEASE")
+          CHROMEDRIVER_VERSION=$(curl -sS "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION/chromedriver_linux64.zip" | grep -oP '(\d+\.\d+\.\d+\.\d+)' | head -1)
           curl -L -o chromedriver.zip "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
           unzip chromedriver.zip
           chmod +x chromedriver
