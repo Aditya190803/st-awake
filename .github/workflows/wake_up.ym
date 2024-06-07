@@ -1,0 +1,21 @@
+name: Wake Up Streamlit Apps
+
+on:
+  schedule:
+    - cron: "0 0 */7 * *"
+
+jobs:
+  wake-up:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.12"
+
+      - name: Run Python script to wake up Streamlit apps
+        run: python wake_up_streamlit.py
