@@ -18,11 +18,16 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.12"
+          python-version: "3.x"
 
       - name: Install dependencies
         run: |
           pip install selenium
+
+      - name: Set up ChromeDriver
+        uses: actions/setup-chromedriver@v1
+        with:
+          version: latest
 
       - name: Run Python script to wake up Streamlit apps
         run: python wake_up_streamlit.py
