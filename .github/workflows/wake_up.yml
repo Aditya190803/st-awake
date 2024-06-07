@@ -20,9 +20,9 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
+      - name: Install Selenium
+        run: pip install selenium
+
 
       - name: Wake up Streamlit apps
         run: python wake_up_apps.py
