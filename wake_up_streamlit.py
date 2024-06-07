@@ -4,7 +4,9 @@ from streamlit_apps import STREAMLIT_APPS
 import datetime
 
 # Set up Selenium webdriver (assuming Chrome)
-driver = webdriver.Chrome()
+options = webdriver.ChromeOptions()
+options.add_argument('--headless')  # Run Chrome in headless mode
+driver = webdriver.Chrome(options=options)
 
 # Initialize log file
 log_file = open("wakeup_log.txt", "a")
