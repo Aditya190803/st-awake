@@ -8,26 +8,26 @@ on:
     - cron: "0 0 */7 * *"
 
 jobs:
-  wake-up:
+  wake_up_apps:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.x"
+          python-version: '3.x'
 
       - name: Install dependencies
         run: |
-          pip install selenium
+          pip install -r requirements.txt
 
-      - name: Run Python script to wake up Streamlit apps
-        run: python wake_up_streamlit.py
+      - name: Wake up Streamlit apps
+        run: python wake_up_apps.py
 
-      - name: Upload log file as artifact
+      - name: Upload log artifact
         uses: actions/upload-artifact@v2
         with:
           name: wakeup-log
