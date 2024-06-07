@@ -1,0 +1,35 @@
+name: Wake Up Streamlit Apps
+
+on:
+  schedule:
+    - cron: "0 0 */7 * *"
+
+jobs:
+  wake-up:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Read Streamlit App URLs from CSV
+        id: read_csv
+        run: |
+          echo "Reading Streamlit App URLs from streamlit_apps.csv"
+          cat streamlit_apps.csv
+
+      - name: Check Streamlit App Status
+        id: check_status
+        run: |
+          # Loop through each URL in the CSV file
+          while IFS= read -r url; do
+            echo "Checking status of $url"
+            status_code=$(curl -s -o /dev/null -w "%{http_code}" "$url")
+            echo "Status code for $url: $status_code"
+            if [ "$status_code" != "200" ]; then
+              echo "Streamlit app at $url is asleep. Sending wake-up request..."
+              curl -X POST <WAKE_UP_ENDPOINT>
+            else
+              echo "Streamlit app at $url is awake."
+            fi
+          done < streamlit_apps.csv
