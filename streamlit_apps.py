@@ -6,5 +6,6 @@ STREAMLIT_APPS = [
     "https://chat-with-anything.streamlit.app/",
     "https://csv-can-talk.streamlit.app/",
     "https://jobfit.streamlit.app/",
-    "https://pdf-can-talk.streamlit.app/"
+    "https://pdf-can-talk.streamlit.app/",
+    "https://generate-a-blog.streamlit.app/"
 ]
