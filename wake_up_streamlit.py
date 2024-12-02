@@ -2,52 +2,48 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException
-from streamlit_app import STREAMLIT_APPS
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 import datetime
-
-# Set up Selenium webdriver (assuming Chrome)
-options = webdriver.ChromeOptions()
-options.add_argument('--headless')  # Run Chrome in headless mode
-driver = webdriver.Chrome(options=options)
+import traceback
+from streamlit_app import STREAMLIT_APPS
 
 # Initialize log file
 log_file = open("wakeup_log.txt", "a")
-
-# Log the current date and time
 log_file.write("Execution started at: {}\n".format(datetime.datetime.now()))
 
-# Iterate through each URL in the list
+# Set up Selenium webdriver
+options = webdriver.ChromeOptions()
+options.add_argument('--headless')
+options.add_argument('--disable-gpu')
+options.add_argument('--no-sandbox')
+driver = webdriver.Chrome(options=options)
+
+
+
 for url in STREAMLIT_APPS:
     try:
-        # Navigate to the webpage
+        log_file.write(f"Processing URL: {url}\n")
+        # Open the URL
         driver.get(url)
 
-        # Check if the wake up button is already clicked
-        already_awake = "Already awake" in driver.page_source
-        
-        if not already_awake:
-            # Find the button element by data-testid
-            wakeup_button = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable((By.CLASS_NAME, "button_button_primary__E3Mmg")))
-
-            # Click the button to wake up the Streamlit app
+        # Wait for the "Yes, get this app back up!" button to appear
+        try:
+            wakeup_button = WebDriverWait(driver, 15).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[@data-testid='wakeup-button-owner']"))
+            )
+            # Click the button
             wakeup_button.click()
+            log_file.write(f"Successfully woke up app at: {url}\n")
+        except TimeoutException:
+            log_file.write(f"Wake-up button not found or not clickable at: {url}\n")
 
-        # Log success or already awake
-        if already_awake:
-            log_file.write("App already awake at: {}\n".format(url))
-        else:
-            log_file.write("Successfully woke up app at: {}\n".format(url))
-    except NoSuchElementException:
-        # Log button not found
-        log_file.write("Button not found for app at: {}\n".format(url))
     except Exception as e:
-        # Log any other exceptions
-        log_file.write("Error for app at {}: {}\n".format(url, str(e)))
+        log_file.write(f"Error processing {url}: {e}\n")
+        log_file.write(f"Traceback: {traceback.format_exc()}\n")
 
 # Close the browser
 driver.quit()
 
-# Close the log file
+# Log completion
+log_file.write("Execution completed at: {}\n".format(datetime.datetime.now()))
 log_file.close()
